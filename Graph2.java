@@ -26,6 +26,7 @@ public class Graph2 {
         List<Integer> path = Dijkstra.reconstructPath(prev, targetNode);
 
         System.out.println("Shortest path from " + startNode + " to " + targetNode + ": " + path);
+        sc.close();
     }
 }
 
@@ -105,4 +106,5 @@ class Node implements Comparable<Node> {
     public int compareTo(Node other) {
         return Integer.compare(this.cost, other.cost);
     }
+   
 }
