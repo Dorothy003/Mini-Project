@@ -140,7 +140,7 @@ public class Main extends Application {
 
     private void animateSteps(List<Point> steps, Point endPoint) {
         Timeline timeline = new Timeline();
-        int delay = 20; // delay of 20 miliseconds   so that it looks like the grids are being explored like a snake
+        int delay = 20; // delay of 20 milliseconds   so that it looks like the grids are being explored like a snake
 
         for (int i = 0; i < steps.size(); i++) {
             Point p = steps.get(i);
