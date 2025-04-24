@@ -9,6 +9,8 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import javafx.scene.control.ComboBox;
+
 
 import java.util.*;
 
@@ -52,6 +54,12 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) {
+
+        ComboBox<String> algorithmSelector = new ComboBox<>();
+        algorithmSelector.getItems().addAll("DFS", "BFS", "Dijkstra");
+        algorithmSelector.setValue("DFS"); // Default selection
+
+
         GridPane gridPane = new GridPane();
         gridPane.setPadding(new Insets(10));
 
@@ -103,15 +111,45 @@ public class Main extends Application {
             }
         }
 
+        //Creating buttons-
         Button startBtn = new Button("Set Start");
         Button endBtn = new Button("Set End");
         Button obstacleBtn = new Button("Place Obstacles/Weights");
-        Button dfsBtn = new Button("Run DFS");
-        Button dijkstraBtn = new Button("Run Dijkstra");// extra
+        Button runBtn = new Button("Run Algorithm");
+        //Components with css
+        startBtn.getStyleClass().add("button");
+        endBtn.getStyleClass().add("button");
+        obstacleBtn.getStyleClass().add("button");
+        runBtn.getStyleClass().add("button");
 
+        //Components with event listener
         startBtn.setOnAction(e -> currentMode = Mode.START);
         endBtn.setOnAction(e -> currentMode = Mode.END);
         obstacleBtn.setOnAction(e -> currentMode = Mode.OBSTACLE);
+        runBtn.setOnAction(e -> {
+            if (start != null && end != null) {
+                String selected = algorithmSelector.getValue();
+                switch (selected) {
+                    case "DFS":
+                        runDFSWithAnimation();
+                        break;
+                    case "BFS":
+                        runBFSWithAnimation();
+                        break;
+                    case "Dijkstra":
+                        runDijkstraWithAnimation();
+                        break;
+                }
+            }
+        });
+        /*
+        //Function to call BFS
+        bfsBtn.setOnAction(e -> {
+            if (start != null && end != null) {
+                runBFSWithAnimation();
+            }
+        });
+
         dfsBtn.setOnAction(e -> {
             if (start != null && end != null) {
                 runDFSWithAnimation();
@@ -122,18 +160,53 @@ public class Main extends Application {
             if (start != null && end != null) {
                 runDijkstraWithAnimation();
             }
-        }); // extra
+        }); // extra*/
+        HBox controls = new HBox(10, startBtn, endBtn, obstacleBtn, algorithmSelector, runBtn);
 
-        HBox controls = new HBox(10, startBtn, endBtn, obstacleBtn, dfsBtn, dijkstraBtn);
         controls.setPadding(new Insets(10));
 
         VBox root = new VBox(10, controls, gridPane);
         Scene scene = new Scene(root);
+        scene.getStylesheets().add(getClass().getResource("style.css").toExternalForm());
         primaryStage.setScene(scene);
-        primaryStage.setTitle("Pathfinding Visualizer (DFS , Dijkstra with Animation)");
+        primaryStage.setTitle("Pathfinding Visualizer (DFS , BFS,  Dijkstra with Animation)");
         primaryStage.show();
     }
+    //Breadth First Search algorithm
+    private void runBFSWithAnimation() {
+        boolean[][] visited = new boolean[ROWS][COLS];
+        Queue<Point> queue = new LinkedList<>();
+        List<Point> animationSteps = new ArrayList<>();
 
+        queue.add(new Point(start.row, start.col, null));
+        visited[start.row][start.col] = true;
+
+        Point endPoint = null;
+
+        while (!queue.isEmpty()) {
+            Point current = queue.poll();
+            animationSteps.add(current);
+
+            if (current.row == end.row && current.col == end.col) {
+                endPoint = current;
+                break;
+            }
+
+            for (int[] dir : new int[][]{{0,1},{1,0},{0,-1},{-1,0}}) {
+                int newRow = current.row + dir[0];
+                int newCol = current.col + dir[1];
+
+                if (isValid(newRow, newCol) && !visited[newRow][newCol] && grid[newRow][newCol].getFill() != Color.BLACK) {
+                    visited[newRow][newCol] = true;
+                    queue.add(new Point(newRow, newCol, current));
+                }
+            }
+        }
+
+        animateSteps(animationSteps, endPoint);
+    }
+
+    //Depth First Search algorithm
     private void runDFSWithAnimation() {
         boolean[][] visited = new boolean[ROWS][COLS];
         Stack<Point> stack = new Stack<>();
@@ -166,7 +239,7 @@ public class Main extends Application {
 
         animateSteps(animationSteps, endPoint);
     }
-
+    //Dijkstra algorithm
     private void runDijkstraWithAnimation() {
         boolean[][] visited = new boolean[ROWS][COLS];
         PriorityQueue<PointDistance> pq = new PriorityQueue<>(Comparator.comparingInt(p -> p.distance));
