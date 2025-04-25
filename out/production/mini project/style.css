@@ -1,0 +1,59 @@
+
+.root {
+    -fx-background-color:#8D769A;
+}
+
+
+.grid-pane {
+    -fx-background-color: white; /* Ensure the grid stays white */
+    -fx-border-color: #ccc;
+    -fx-border-width: 2;
+    -fx-padding: 10;
+}
+
+.button {
+    -fx-background-color: #68507B;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-padding: 5 10;
+    -fx-border-radius: 5;
+    -fx-background-radius: 5;
+}
+.button:hover {
+    -fx-background-color: #46315C;
+}
+.combo-box {
+    -fx-background-color: #68507B;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+}
+
+/* Style for all the cells within the dropdown list */
+.combo-box-popup .list-view .list-cell {
+    -fx-text-fill: white;
+    -fx-background-color: #68507B;
+}
+
+/* Style for a selected cell in the dropdown list */
+.combo-box-popup .list-view .list-cell:filled:selected {
+    -fx-text-fill: white !important;
+    -fx-background-color: #EFCA93;
+}
+
+/* Style for a focused cell in the dropdown list */
+.combo-box-popup .list-view .list-cell:filled:focused {
+    -fx-text-fill: white;
+    -fx-background-color: #EFCA93;
+}
+
+.rectangle-cell {
+    -fx-stroke: #888;
+}
+
+.rectangle-cell.visited {
+    -fx-fill: lightblue;
+}
+
+.rectangle-cell.path {
+    -fx-fill: yellow;
+}
