@@ -116,11 +116,13 @@ public class Main extends Application {
         Button endBtn = new Button("Set End");
         Button obstacleBtn = new Button("Place Obstacles/Weights");
         Button runBtn = new Button("Run Algorithm");
+        Button resetbtn = new Button("Reset");
         //Components with css
         startBtn.getStyleClass().add("button");
         endBtn.getStyleClass().add("button");
         obstacleBtn.getStyleClass().add("button");
         runBtn.getStyleClass().add("button");
+        resetbtn.getStyleClass().add("button");
 
         //Components with event listener
         startBtn.setOnAction(e -> currentMode = Mode.START);
@@ -142,6 +144,7 @@ public class Main extends Application {
                 }
             }
         });
+        resetbtn.setOnAction(e->resetGrid());
         /*
         //Function to call BFS
         bfsBtn.setOnAction(e -> {
@@ -161,7 +164,7 @@ public class Main extends Application {
                 runDijkstraWithAnimation();
             }
         }); // extra*/
-        HBox controls = new HBox(10, startBtn, endBtn, obstacleBtn, algorithmSelector, runBtn);
+        HBox controls = new HBox(10, startBtn, endBtn, obstacleBtn, algorithmSelector, runBtn, resetbtn);
 
         controls.setPadding(new Insets(10));
 
@@ -341,6 +344,17 @@ public class Main extends Application {
     private boolean isValid(int row, int col) {
         return row >= 0 && row < ROWS && col >= 0 && col < COLS;
     }
+    private void resetGrid() {
+        for (int i = 0; i < ROWS; i++) {
+            for (int j = 0; j < COLS; j++) {
+                grid[i][j].setFill(Color.WHITE);    // Reset color to white
+                weights[i][j] = 1;                   // Reset weight to 1
+            }
+        }
+        start = null;
+        end = null;
+    }
+
 
     public static void main(String[] args) {
         launch(args);
