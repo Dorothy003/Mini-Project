@@ -28,6 +28,9 @@
     -fx-font-weight: bold;
 }
 
+.combo-box .text {
+    -fx-fill: white;
+}
 /* Style for all the cells within the dropdown list */
 .combo-box-popup .list-view .list-cell {
     -fx-text-fill: white;

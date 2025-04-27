@@ -3,13 +3,15 @@ import javafx.animation.Timeline;
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
+import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
 import javafx.util.Duration;
-import javafx.scene.control.ComboBox;
+import javafx.animation.FadeTransition;
 
 
 import java.util.*;
@@ -20,7 +22,8 @@ public class Main extends Application {
     private static final int CELL_SIZE = 30;
 
     private final Rectangle[][] grid = new Rectangle[ROWS][COLS];
-    private final int[][] weights = new int[ROWS][COLS]; //extra
+    private final Label[][] labels = new Label[ROWS][COLS];
+    private final int[][] weights = new int[ROWS][COLS];
     private Mode currentMode = Mode.OBSTACLE;
     private Point start = null;
     private Point end = null;
@@ -48,6 +51,7 @@ public class Main extends Application {
         PointDistance(int row, int col, int distance, PointDistance parent) {
             this.row = row;
             this.col = col;
+            this.distance = distance;
             this.parent = parent;
         }
     }
@@ -57,7 +61,7 @@ public class Main extends Application {
 
         ComboBox<String> algorithmSelector = new ComboBox<>();
         algorithmSelector.getItems().addAll("DFS", "BFS", "Dijkstra");
-        algorithmSelector.setValue("DFS"); // Default selection
+        algorithmSelector.setValue("Select Algorithm"); // Default selection
 
 
         GridPane gridPane = new GridPane();
@@ -67,7 +71,14 @@ public class Main extends Application {
             for (int j = 0; j < COLS; j++) {
                 Rectangle cell = new Rectangle(CELL_SIZE, CELL_SIZE, Color.WHITE);
                 cell.setStroke(Color.GRAY);
-                weights[i][j] = 1; // default weight = 1
+
+                Label label = new Label("");
+                label.setFont(Font.font("Arial", FontWeight.BOLD, 16));
+                label.setTextFill(Color.BLACK);
+                label.setMouseTransparent(true);
+
+                StackPane cellContainer = new StackPane();
+                cellContainer.getChildren().addAll(cell, label);
 
                 int finalI = i;
                 int finalJ = j;
@@ -89,32 +100,38 @@ public class Main extends Application {
                             cell.setFill(Color.RED);
                             break;
                         case OBSTACLE:
-                            if (cell.getFill() == Color.WHITE) {
-                                cell.setFill(Color.BLACK);
-                                weights[finalI][finalJ] = Integer.MAX_VALUE; //extra
-                            } else if (cell.getFill() == Color.BLACK) {
-                                cell.setFill(Color.PINK);
-                                weights[finalI][finalJ] = 5;
-                            } else if (cell.getFill() == Color.PINK) {
-                                cell.setFill(Color.PURPLE);
-                                weights[finalI][finalJ] = 10;
-                            } else {
-                                cell.setFill(Color.WHITE);
-                                weights[finalI][finalJ] = 1;
-                            }
+                            TextInputDialog dialog = new TextInputDialog("1");
+                            dialog.setHeaderText("Enter Weight (1-100):");
+                            Optional<String> result = dialog.showAndWait();
+                            result.ifPresent(value -> {
+                                try {
+                                    int weight = Integer.parseInt(value);
+                                    if (weight >= 1 && weight <= 100) {
+                                        weights[finalI][finalJ] = weight;
+                                        cell.setFill(Color.WHITE);
+                                        label.setTextFill(Color.BLACK);
+                                        label.setText(String.valueOf(weight));
+                                    } else {
+                                        showError("Please enter a weight between 1 and 100.");
+                                    }
+                                } catch (NumberFormatException ex) {
+                                    showError("Invalid input.");
+                                }
+                            });
                             break;
                     }
                 });
 
                 grid[i][j] = cell;
-                gridPane.add(cell, j, i);
+                labels[i][j] = label;
+                gridPane.add(cellContainer, j, i);
             }
         }
 
         //Creating buttons-
         Button startBtn = new Button("Set Start");
         Button endBtn = new Button("Set End");
-        Button obstacleBtn = new Button("Place Obstacles/Weights");
+        Button obstacleBtn = new Button("Place Weights");
         Button runBtn = new Button("Run Algorithm");
         Button resetbtn = new Button("Reset");
         //Components with css
@@ -130,6 +147,7 @@ public class Main extends Application {
         obstacleBtn.setOnAction(e -> currentMode = Mode.OBSTACLE);
         runBtn.setOnAction(e -> {
             if (start != null && end != null) {
+                clearGridForNewRun();
                 String selected = algorithmSelector.getValue();
                 switch (selected) {
                     case "DFS":
@@ -165,14 +183,15 @@ public class Main extends Application {
             }
         }); // extra*/
         HBox controls = new HBox(10, startBtn, endBtn, obstacleBtn, algorithmSelector, runBtn, resetbtn);
-
         controls.setPadding(new Insets(10));
 
         VBox root = new VBox(10, controls, gridPane);
         Scene scene = new Scene(root);
         scene.getStylesheets().add(getClass().getResource("style.css").toExternalForm());
+
         primaryStage.setScene(scene);
         primaryStage.setTitle("Pathfinding Visualizer (DFS , BFS,  Dijkstra with Animation)");
+        primaryStage.setMaximized(true);
         primaryStage.show();
     }
     //Breadth First Search algorithm
@@ -244,10 +263,17 @@ public class Main extends Application {
     }
     //Dijkstra algorithm
     private void runDijkstraWithAnimation() {
+        int[][] distance = new int[ROWS][COLS];
         boolean[][] visited = new boolean[ROWS][COLS];
+
+        for (int[] row : distance) {
+            Arrays.fill(row, Integer.MAX_VALUE);
+        }
+
         PriorityQueue<PointDistance> pq = new PriorityQueue<>(Comparator.comparingInt(p -> p.distance));
         List<PointDistance> animationSteps = new ArrayList<>();
 
+        distance[start.row][start.col] = 0;
         pq.add(new PointDistance(start.row, start.col, 0, null));
 
         PointDistance endPoint = null;
@@ -268,9 +294,14 @@ public class Main extends Application {
                 int newRow = current.row + dir[0];
                 int newCol = current.col + dir[1];
 
-                if (isValid(newRow, newCol) && !visited[newRow][newCol] && grid[newRow][newCol].getFill() != Color.BLACK) {
-                    int newDist = current.distance + weights[newRow][newCol];
-                    pq.add(new PointDistance(newRow, newCol, newDist, current));
+                if (isValid(newRow, newCol) && !visited[newRow][newCol]) {
+                    int weight = (weights[newRow][newCol] == 0) ? 1 : weights[newRow][newCol];
+                    int newDist = current.distance + weight;
+
+                    if (newDist < distance[newRow][newCol]) {
+                        distance[newRow][newCol] = newDist;
+                        pq.add(new PointDistance(newRow, newCol, newDist, current));
+                    }
                 }
             }
         }
@@ -347,15 +378,43 @@ public class Main extends Application {
     private void resetGrid() {
         for (int i = 0; i < ROWS; i++) {
             for (int j = 0; j < COLS; j++) {
-                grid[i][j].setFill(Color.WHITE);    // Reset color to white
-                weights[i][j] = 1;                   // Reset weight to 1
+                FadeTransition ft = new FadeTransition(Duration.millis(300), grid[i][j]);
+                ft.setFromValue(1.0);
+                ft.setToValue(0.0);
+                int finalI = i;
+                int finalJ = j;
+
+                ft.setOnFinished(e -> {
+                    grid[finalI][finalJ].setFill(Color.WHITE);
+                    weights[finalI][finalJ] = 1;
+                    labels[finalI][finalJ].setText("");
+                    grid[finalI][finalJ].setOpacity(1.0); // Reset opacity back to full after fade
+                });
+
+                ft.play();
             }
         }
         start = null;
         end = null;
     }
 
+    private void clearGridForNewRun() {
+        for (int i = 0; i < ROWS; i++) {
+            for (int j = 0; j < COLS; j++) {
+                Rectangle cell = grid[i][j];
+                if (cell.getFill().equals(Color.LIGHTBLUE) || cell.getFill().equals(Color.YELLOW)) {
+                    cell.setFill(Color.WHITE);
+                }
+            }
+        }
+    }
 
+    private void showError(String message) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
+    }
     public static void main(String[] args) {
         launch(args);
     }
