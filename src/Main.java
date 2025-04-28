@@ -3,12 +3,17 @@ import javafx.animation.Timeline;
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
-import javafx.scene.layout.*;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+
 import java.util.*;
 
 public class Main extends Application {
@@ -418,15 +423,13 @@ public class Main extends Application {
     private void clearPath() {
         for (int i = 0; i < ROWS; i++) {
             for (int j = 0; j < COLS; j++) {
-                if (grid[i][j].getFill() == Color.LIGHTBLUE || grid[i][j].getFill() == Color.YELLOW) {
+                Color color = (Color) grid[i][j].getFill();
+                if (color == Color.LIGHTBLUE || color == Color.YELLOW) {
                     grid[i][j].setFill(Color.WHITE);
                 }
             }
         }
-        if (start != null) grid[start.row][start.col].setFill(Color.LIMEGREEN);
-        if (end != null) grid[end.row][end.col].setFill(Color.RED);
     }
-
     public static void main(String[] args) {
         launch(args);
     }

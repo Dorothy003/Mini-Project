@@ -1,6 +1,6 @@
 
 .root {
-    -fx-background-color:#8D769A;
+    -fx-background-color:#74966F;
 }
 
 
@@ -12,7 +12,7 @@
 }
 
 .button {
-    -fx-background-color: #68507B;
+    -fx-background-color: #49724B;
     -fx-text-fill: white;
     -fx-font-weight: bold;
     -fx-padding: 5 10;
@@ -20,10 +20,10 @@
     -fx-background-radius: 5;
 }
 .button:hover {
-    -fx-background-color: #46315C;
+    -fx-background-color: #2B4E31;
 }
 .combo-box {
-    -fx-background-color: #68507B;
+    -fx-background-color: #49724B;
     -fx-text-fill: white;
     -fx-font-weight: bold;
 }
@@ -31,7 +31,7 @@
 /* Style for all the cells within the dropdown list */
 .combo-box-popup .list-view .list-cell {
     -fx-text-fill: white;
-    -fx-background-color: #68507B;
+    -fx-background-color: #49724B;
 }
 
 /* Style for a selected cell in the dropdown list */
