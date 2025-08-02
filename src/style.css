@@ -1,0 +1,138 @@
+.root {
+    -fx-font-family: "Segoe UI", Arial, sans-serif;
+    -fx-background-color: #8D769A !important;
+
+}
+
+/* Button styling */
+.button {
+    -fx-background-color: #68507B;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-padding: 8 15;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 5, 0, 0, 1);
+}
+
+.button:hover {
+    -fx-background-color:  #46315C;
+}
+
+.button:pressed {
+    -fx-background-color:  #68507B;
+}
+
+/* ComboBox styling */
+.combo-box {
+    -fx-background-color: white;
+    -fx-border-color:  #68507B;
+    -fx-padding: 2;
+}
+
+.combo-box .list-cell {
+    -fx-padding: 5 10;
+}
+
+.combo-box .arrow-button {
+    -fx-background-color: #68507B;
+    -fx-background-radius: 5 5 5 5;
+}
+
+.combo-box .arrow {
+    -fx-background-color: white;
+}
+.combo-box .list-view .list-cell:filled:focused {
+    -fx-text-fill: white;
+    -fx-background-color: #EFCA93;
+}
+/* Grid cells */
+.rectangle {
+    -fx-stroke:  #68507B;
+    -fx-stroke-width: 1;
+    -fx-background-color: white;
+}
+
+/* Information panel styling */
+.info-panel {
+    -fx-background-color:#68507B !important;
+    -fx-border-color: #FA8E8B;
+    -fx-border-width: 1;
+    -fx-padding: 15;
+}
+
+.info-panel .label {
+    -fx-text-fill: white;
+}
+
+.info-panel .title {
+    -fx-font-size: 90px;
+    -fx-font-weight: bold;
+    -fx-text-fill: white;
+    -fx-padding: 0 0 10 0;
+}
+
+/* Chart styling */
+.chart {
+    -fx-background-color: white;
+    -fx-border-color: #68507B;
+    -fx-border-width: 3;
+    -fx-padding: 15;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 5, 0, 0, 1);
+}
+
+.chart-title {
+    -fx-text-fill: #68507B;
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+}
+
+.chart-legend {
+    -fx-background-color: transparent;
+}
+
+.chart-plot-background {
+    -fx-background-color: transparent;
+}
+
+.axis {
+    -fx-tick-label-fill:  #68507B;
+}
+
+.axis-label {
+    -fx-text-fill:  #68507B;
+    -fx-font-weight: bold;
+}
+
+/* Control bar styling */
+.control-bar {
+    -fx-background-color:transparent;
+    -fx-padding: 10;
+    -fx-spacing: 10;
+    -fx-border-width: 0 0 1 0;
+}
+
+/* Main content area */
+.main-content {
+    -fx-padding: 10;
+    -fx-spacing: 10;
+}
+
+/* Grid pane styling */
+.grid-pane {
+    -fx-background-color: white;
+    -fx-border-color: #d5d5d5;
+    -fx-border-width: 1;
+    -fx-border-radius: 5;
+    -fx-padding: 10;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 5, 0, 0, 1);
+}
+.default-color0.chart-bar.bar-dfs {
+    -fx-bar-fill: orange;
+}
+
+.default-color0.chart-bar.bar-bfs {
+    -fx-bar-fill: orange;
+}
+
+.default-color0.chart-bar.bar-dijkstra {
+    -fx-bar-fill: orange;
+}
